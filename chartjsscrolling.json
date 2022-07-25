@@ -1,0 +1,127 @@
+[
+    {
+        "id": "25875f992bc07378",
+        "type": "tab",
+        "label": "test chart js stream",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "f401257b6811f333",
+        "type": "ui_template",
+        "z": "25875f992bc07378",
+        "group": "16bc2f799e8aba9c",
+        "name": "Graphe Effondrement Electrode",
+        "order": 6,
+        "width": "17",
+        "height": "8",
+        "format": "<html>\n<body>\n<div>\n  <button type=\"button\" id=\"resetZoom\">Reset Zoom and Pan</button>\n</div>\n<div ng-bind-html=\"msg.payload\"></div>\n<canvas id=\"streamingChart\" width=\"600\" height=\"400\"></canvas>\n<script src=\"/app.min.js\"></script>\n<script src=\"/chart.min.js\"></script>\n<script src=\"/hammer.js\"></script>\n<script src=\"/chartjs-plugin-zoom.min.js\"></script>\n<script src=\"/chartjs-adapter-date-fns.bundle.min.js\"></script>\n<script src=\"/chartjs-plugin-streaming.js\"></script>\n\n<script>\n// the app in question keeps the last 5 minutes' worth of data in the buffer, the following should only apply to the rendered chart\nconst config = {\n  minDuration: 5 * 1000,\n  maxDuration: 1 * 60 * 1000,\n  visible: 10 * 1000\n};\n\nconst streamingChart = new Chart($(\"#streamingChart\"), {\n  // The type of chart we want to create\n      type: 'line',\n    \n      // The data for our dataset\n      data: {\n        datasets: [{\n          label: \"dataset 1\",\n          data: []\n        }]\n      },\n    \n      // Configuration options go here\n      options: {\n        animation: {\n          duration: 0\n        },\n        hover: {\n          animationDuration: 0\n        },\n        responsiveAnimationDuration: 0,\n        elements: {\n          line: {\n            tension: 0\n          }\n        },\n        scales: {\n          xAxes: {\n            type: \"realtime\",\n            streaming: {\n              ttl: config.maxDuration,\n              duration: config.visible\n            },\n            scaleLabel: {\n              display: true,\n              labelString: \"Time\"\n            },\n            display: true,\n            time: {\n              displayFormats: {\n                millisecond: \"HH:mm:ss\",\n                second: \"HH:mm:ss\",\n                minute: \"HH:mm:ss\",\n                hour: \"HH:mm:ss\"\n              }\n            }\n          }\n        },\n        plugins: {\n          zoom: {\n            pan: {\n              enabled: true,\n              mode: 'x',\n              rangeMin: {\n                x: 0\n              },\n              rangeMax: {\n                x: config.maxDuration\n              }\n            },\n            zoom: {\n              enabled: true,\n              mode: 'x',\n              rangeMin: {\n                x: config.minDuration\n              },\n              rangeMax: {\n                x: config.maxDuration\n              }\n            }\n          }\n        }\n      }\n});\n\n$(document).ready(function() {\n  $(\"#resetZoom\").on(\"click\", function() {\n    streamingChart.resetZoom();\n  });\n  updateStreamingChartData();\n});\n\nfunction updateStreamingChartData() {\n  streamingChart.data.datasets.forEach((set) => {\n    set.data.push({\n      x: Date.now(),\n      y: bleh\n    });\n  });\n  streamingChart.update();\n  // NOTE: the device this chart is intended to stream data from actually sends a new point every 10 to 20 milliseconds, this 500ms delay is just to simplify this test...\n  setTimeout(updateStreamingChartData, 500);\n}\n\nvar theScope = scope;\nvar bleh = null;\n\n// Watch the payload and update\n(function(scope) {\n    scope.$watch('msg.payload', function(data) {\n        update(data);\n    });\n})(scope);\n\nfunction update(dta) {\n    theScope.send({payload:dta});\n    bleh = dta.data;\n    otherStuff();\n}\n\n\n</script>\n</body>\n</html>",
+        "storeOutMessages": true,
+        "fwdInMessages": false,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 690,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5a3a0289fbeb2fc6",
+        "type": "debug",
+        "z": "25875f992bc07378",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 550,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "cd62114af56303a1",
+        "type": "function",
+        "z": "25875f992bc07378",
+        "name": "",
+        "func": "msg.payload = \n{\n    \"data\":msg.payload\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 100,
+        "wires": [
+            [
+                "5a3a0289fbeb2fc6",
+                "f401257b6811f333"
+            ]
+        ]
+    },
+    {
+        "id": "95c2a352a9847dd1",
+        "type": "inject",
+        "z": "25875f992bc07378",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "1",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "1",
+        "topic": "",
+        "payload": "1",
+        "payloadType": "num",
+        "x": 150,
+        "y": 100,
+        "wires": [
+            [
+                "cd62114af56303a1"
+            ]
+        ]
+    },
+    {
+        "id": "fa692258bca54b16",
+        "type": "ui_spacer",
+        "z": "25875f992bc07378",
+        "name": "spacer",
+        "group": "16bc2f799e8aba9c",
+        "order": 1,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "16bc2f799e8aba9c",
+        "type": "ui_group",
+        "name": "Group 1",
+        "tab": "f4528104e64b1c48",
+        "order": 1,
+        "disp": false,
+        "width": "20",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "f4528104e64b1c48",
+        "type": "ui_tab",
+        "name": "stream",
+        "icon": "dashboard",
+        "order": 11,
+        "disabled": false,
+        "hidden": false
+    }
+]

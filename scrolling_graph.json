@@ -1,0 +1,219 @@
+[
+    {
+        "id": "9dd14a9804e54695",
+        "type": "tab",
+        "label": "Flow 4",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "c6e426c565566edf",
+        "type": "serial in",
+        "z": "9dd14a9804e54695",
+        "name": "",
+        "serial": "36594b5169de2c99",
+        "x": 70,
+        "y": 80,
+        "wires": [
+            [
+                "ba63706474a666c0"
+            ]
+        ]
+    },
+    {
+        "id": "ba63706474a666c0",
+        "type": "function",
+        "z": "9dd14a9804e54695",
+        "name": "function 1",
+        "func": "\nvar m = msg.payload.split(',');\nvar H = {payload:parseFloat(m[0])};\nvar T = {payload:parseFloat(m[1])};\n\nreturn [H,T];",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 100,
+        "y": 180,
+        "wires": [
+            [
+                "d5d5e84aa3109358"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "60157f21eb7020ab",
+        "type": "debug",
+        "z": "9dd14a9804e54695",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 580,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "d5d5e84aa3109358",
+        "type": "function",
+        "z": "9dd14a9804e54695",
+        "name": "Add Time",
+        "func": "// Given a payload value adds the current time into this and passes it on\n// as a hash containing {x: current_time, y: payload}\nmsg.payload = {x: new Date(), y: msg.payload};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 180,
+        "wires": [
+            [
+                "3e3d75cf4a5b333c",
+                "60157f21eb7020ab"
+            ]
+        ]
+    },
+    {
+        "id": "02d18bc225a553a8",
+        "type": "ui_template",
+        "z": "9dd14a9804e54695",
+        "d": true,
+        "group": "ee32dc5a4dfaa70c",
+        "name": "chart.js 1",
+        "order": 9,
+        "width": "0",
+        "height": "0",
+        "format": "<!--\nA node-red Dashboard UI template to draw charts using chart.js\nBefore use download the file Chart.bundle.min.js from chartjs.org and \nsave in an appropriate folder (e.g. .node-red/static). \nIn settings.js set httpStatic to the full path of that folder and restart node-red.\nMake sure that the options for 'Pass through messages' and 'Add output messages' \nin this node are cleared.\nFor basic use set the id and size you want in the canvas tag and set chartID to the id\nSetup chartDef as required for your chart (see the chart.js docs)\nIn addition, for each dataset specify in chartDef the message topic that you will use for that channel.\nTo (optionally) provide the chart with a one-off set of data send the node a message with:\nmsg.action = \"load\"\nmsg.payload = [\n{topic: \"mytopic1\", data: [{x: x1,y:y2},{x:x2,y:y2},...]},\n{topic: \"mytopic2\", data: [{x: x1,y:y2},{x:x2,y:y2},...]},\n...]\nWhere mytopic1 and mytopic2 are the the topics specified in the chartDef\n\nTo provide the chart with data incrementally (for a time series for example)\nsend it messages of the form\n{topic: \"mytopic1\", payload: {x:xvalue,y:yvalue}}\nThe chart will be updated as each sample is provided.\nTo limit the growth of the chart set chartMaxPoints and/or chartTimeSpan in the Chart Helper node\nas described at the head of that node.\nIf you find that chart seems to flicker and scroll bars come and go then try \nsetting a size other than auto in the Size specification for this node.\n\nFor Bar charts the x value is the label for the bar and the y value is the bar value\n\nNote that since the chart samples are stored in the browser then the chart will be cleared each\ntime the browser is refreshed (and will be clear on initially opening the view). In order to \nprovided persistency over browser opening and refresh this node may be used in conjunction with\nthe Chart Helper function node.  Details for its use are in the source of that node.\n\nIf your flow includes more that one instance of this script then the line fetching \nChart.bundle.min.js need only be included in one of them\n-->\n<script src=\"/Chart.bundle.min.js\"></script>\n<canvas id=\"myChart1\" width=\"600\" height=\"400\"></canvas>\n<script>\n(function() {\n    var chartID = \"myChart1\";           // set this to the id you have specified in the canvas tag above\n    // setup the chart definition as defined in the chart.js documentation, in addition setting up the topic\n    // for each channel\n    var chartDef = {\n        type: 'line',\n        data: {\n            datasets: [{\n                topic: \"Humidity\",    // used here not by chart.js\n                label: \"Humidity\",\n                yAxisID: \"1\",\n                fill: false,\n                lineTension: 0,\n                borderColor: \"#0000ff\",\n                pointRadius: 0,\n                pointBorderColor: \"#0000ff\",\n                pointBackgroundColor: \"#0000ff\",\n                backgroundColor:  \"#0000ff\",\n                borderWidth: 1,\n                data: []  // data is written here later\n            }]\n        },\n        options: {\n            scales: {\n                xAxes: [{\n                    type: 'time',\n                    time: {\n                        unit: 'second',\n                        unitStepSize: 1,\n                        displayFormats: {\n                            minute: 'MM:SS'\n                        }\n                    },\n                    scaleLabel: {\n                        display: true,\n                        labelString: 'Time'\n                      }\n                }],\n                yAxes: [{\n                    id: \"1\",\n                    ticks: {\n                        min: 0,\n                        max: 100,\n                        stepSize: 10\n                    },\n                    scaleLabel: {\n                        display: true,\n                        labelString: 'Humidity'\n                      }\n                }]\n            },\n            animation: {\n                duration: 0\n            }\n        }\n    }\n        \n/***** You shouldn't normally need to change anything below here *****/    \n    var myChart = null;\n    var loaded = false;     // indicates whether we have already had a load action\n    var chartTimeSpan;\n    var chartMaxPoints;\n\n    function doChart(msg, scope) {\n        if (!myChart) {\n            // chart does not exist so load the data and create it\n            var ctx = document.getElementById(chartID);\n            myChart = new Chart(ctx, chartDef);     \n        }\n        // chart already exists, update it\n        var datasets = myChart.data.datasets;\n        // is this a load or preload action?\n        if (msg.action === \"load\" || msg.action === \"preload\") {\n            // yes, do not allow preload if we have already had a load\n            // so do it if this is a load or we have not previously had a load\n            if (msg.action === \"load\" || !loaded) {\n                // pick up chartTimeSpan and chartMaxPoints if they have been provided\n                if (typeof msg.chartTimeSpan != 'undefined') {\n                    chartTimeSpan = msg.chartTimeSpan;\n                }\n                if (typeof msg.chartMaxPoints != 'undefined') {\n                    chartMaxPoints = msg.chartMaxPoints;\n                }\n                    \n                // replace existing data for matching topics\n                for (var j = 0; j < msg.payload.length; j++) {\n                    var topic = msg.payload[j].topic;\n                    // find it in the chart\n                    for (var i = 0; i < datasets.length; i++) {\n                        if (datasets[i].topic == topic) {\n                            // if stripping old samples by time is required then ensure the x value is Date\n                            if (chartTimeSpan > 0 ) {\n                                var data = msg.payload[j].data;\n                                for (var k = 0; k < data.length; k++) {\n                                    if (typeof data[k].x === \"string\") {\n                                        data[k].x = new Date(data[k].x);\n                                    }\n                                }\n                            }\n                            if (chartDef.type !== \"bar\") {\n                                datasets[i].data = msg.payload[j].data;\n                            } else {\n                                // bar chart so x values must go to labels and y values to dataset\n                                datasets[i].data = [];\n                                myChart.data.labels = [];\n                                var data = msg.payload[j].data;\n                                for (var k = 0; k < data.length; k++) {\n                                    datasets[i].data.push(data[k].y);\n                                    myChart.data.labels.push(data[k].x);\n                                }\n                            }\n                            break;\n                        }\n                    }\n                }\n            }\n            if (msg.action === \"load\") loaded = true;\n            myChart.update();\n        } else {\n            // does the topic match one of the datasets?\n            for (var i = 0; i < datasets.length; i++) {\n                if (datasets[i].topic == msg.topic) {\n                    // if stripping old samples by time is required then ensure the x value is Date\n                    if (chartTimeSpan > 0 && typeof msg.payload.x === \"string\") {\n                        msg.payload.x = new Date(msg.payload.x);\n                    }\n                    if (chartDef.type !== \"bar\") {\n                        datasets[i].data.push(msg.payload);\n                    } else {\n                         // bar chart so x value must go to labels and y value to dataset\n                        datasets[i].data.push(msg.payload.y);\n                        myChart.data.labels.push(msg.payload.x);\n                    }\n                    myChart.update();\n                    break;\n                }\n            }\n        }\n        // strip off samples older than now\n        // charTimeSpan == 0 implies don't do it\n        var shifted = false;\n        if (chartTimeSpan > 0) {\n            var now = new Date();\n            var oldestTimeAllowed = now - chartTimeSpan;\n            for (var i = 0; i < datasets.length; i++) {\n                dataset = datasets[i];\n                while(dataset.data[0] && getTime(dataset.data[0].x) < oldestTimeAllowed) {\n                    dataset.data.shift();\n                    shifted = true;\n                }\n            }\n        }\n        // strip samples off the front if there are now too many\n        // charTimeSpan == 0 implies don't do it\n        if (chartMaxPoints > 0) {\n            for (var i = 0; i < datasets.length; i++) {\n                dataset = datasets[i];\n                while(dataset.data.length > chartMaxPoints) {\n                    dataset.data.shift();\n                    shifted = true;\n                }\n            }\n        }\n        if (shifted) {\n            myChart.update();\n        }\n    };\n\n    // gets the time of an x value, works for strings or Date types\n    function getTime(x) {\n        if (typeof x === \"string\") x = new Date(x);\n        return x.getTime();\n    }\n    \n    // builds the preload message for sending back to the chart helper\n    function preloadMsg() {\n        var preMsg = {action: \"preload\", payload: \"preload\"};\n        // build array of topics in chart\n        var topics = [];\n        for (var i=0; i<chartDef.data.datasets.length; i++) {\n            topics.push(chartDef.data.datasets[i].topic);\n        }\n        preMsg.topics = topics;\n        // has the chart already been created\n        if (myChart) {\n            preMsg.lastXValue = 1;\n        } else {\n            preMsg.lastXValue = 0;\n        }\n        return preMsg;\n    }\n\n    (function(scope) {\n        // this code gets run when the a view is opened on the node in the browser\n        // send a preload message back to node red to ask it send\n        // us a complete set of data. Pass down max points and time span to the helper node for it to use\n        // plus an array of the topics of interest\n        scope.send( preloadMsg() );\n        \n        scope.$watch('msg', function(msg) {\n            if (msg) {\n                doChart(msg, scope);\n            }\n        });\n    })(scope);\n})();\n</script>\n",
+        "storeOutMessages": false,
+        "fwdInMessages": false,
+        "resendOnRefresh": false,
+        "templateScope": "local",
+        "className": "",
+        "x": 700,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3e3d75cf4a5b333c",
+        "type": "change",
+        "z": "9dd14a9804e54695",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Humidity",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 510,
+        "y": 180,
+        "wires": [
+            [
+                "8474db4b5db4fb92"
+            ]
+        ]
+    },
+    {
+        "id": "8474db4b5db4fb92",
+        "type": "ui_template",
+        "z": "9dd14a9804e54695",
+        "group": "16bc2f799e8aba9c",
+        "name": "Graphe Effondrement Electrode",
+        "order": 6,
+        "width": "17",
+        "height": "8",
+        "format": "<html>\n    <head>\n        <script src=\"https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.0/chart.min.js\"></script>\n<script src=\"https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js\"></script>\n<script src=\"https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/1.2.1/chartjs-plugin-zoom.min.js\"></script>\n<script src=\"https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js\"></script>\n<script src=\"https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-streaming/1.7.0/chartjs-plugin-streaming.min.js\"></script>\n    </head>\n<body>\n<div>\n  <button type=\"button\" id=\"resetZoom\">Reset Zoom and Pan</button>\n</div>\n<div ng-bind-html=\"msg.payload\"></div>\n<canvas id=\"streamingChart\" width=\"600\" height=\"400\"></canvas>\n<!--\n<script src=\"/library/chart.min.js\"></script>\n<script src=\"/library/hammer.js\"></script>\n<script src=\"/library/chartjs-plugin-zoom.min.js\"></script>\n<script src=\"/library/chartjs-adapter-date-fns.bundle.min.js\"></script>\n<script src=\"/library/chartjs-plugin-streaming.js\"></script>\n-->\n\n<script>\n// the app in question keeps the last 5 minutes' worth of data in the buffer, the following should only apply to the rendered chart\nconst config = {\n  minDuration: 5 * 1000,\n  maxDuration: 1 * 60 * 1000,\n  visible: 10 * 1000\n};\n\nconst streamingChart = new Chart($(\"#streamingChart\"), {\n  // The type of chart we want to create\n      type: 'line',\n    \n      // The data for our dataset\n      data: {\n        datasets: [{\n          label: \"dataset 1\",\n          data: []\n        }]\n      },\n    \n      // Configuration options go here\n      options: {\n        animation: {\n          duration: 0\n        },\n        hover: {\n          animationDuration: 0\n        },\n        responsiveAnimationDuration: 0,\n        elements: {\n          line: {\n            tension: 0\n          }\n        },\n        scales: {\n          xAxes: {\n            type: \"realtime\",\n            streaming: {\n              ttl: config.maxDuration,\n              duration: config.visible\n            },\n            scaleLabel: {\n              display: true,\n              labelString: \"Time\"\n            },\n            display: true,\n            time: {\n              displayFormats: {\n                millisecond: \"HH:mm:ss\",\n                second: \"HH:mm:ss\",\n                minute: \"HH:mm:ss\",\n                hour: \"HH:mm:ss\"\n              }\n            }\n          }\n        },\n        plugins: {\n          zoom: {\n            pan: {\n              enabled: true,\n              mode: 'x',\n              rangeMin: {\n                x: 0\n              },\n              rangeMax: {\n                x: config.maxDuration\n              }\n            },\n            zoom: {\n              enabled: true,\n              mode: 'x',\n              rangeMin: {\n                x: config.minDuration\n              },\n              rangeMax: {\n                x: config.maxDuration\n              }\n            }\n          }\n        }\n      }\n});\n\n$(document).ready(function() {\n  $(\"#resetZoom\").on(\"click\", function() {\n    streamingChart.resetZoom();\n  });\n  updateStreamingChartData();\n});\n\nfunction updateStreamingChartData() {\n  streamingChart.data.datasets.forEach((set) => {\n    set.data.push({\n      x: Date.now(),\n      y: bleh\n    });\n  });\n  streamingChart.update();\n  // NOTE: the device this chart is intended to stream data from actually sends a new point every 10 to 20 milliseconds, this 500ms delay is just to simplify this test...\n  setTimeout(updateStreamingChartData, 500);\n}\n\nvar theScope = scope;\nvar bleh = null;\n\n// Watch the payload and update\n(function(scope) {\n    scope.$watch('msg.payload', function(data) {\n        update(data);\n    });\n})(scope);\n\nfunction update(dta) {\n    theScope.send({payload:dta});\n    bleh = dta.data;\n    otherStuff();\n}\n\n\n</script>\n</body>\n</html>",
+        "storeOutMessages": true,
+        "fwdInMessages": false,
+        "resendOnRefresh": true,
+        "templateScope": "global",
+        "className": "",
+        "x": 670,
+        "y": 280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "bc899f7404f66e1d",
+        "type": "ui_spacer",
+        "z": "9dd14a9804e54695",
+        "name": "spacer",
+        "group": "16bc2f799e8aba9c",
+        "order": 1,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "36594b5169de2c99",
+        "type": "serial-port",
+        "serialport": "COM17",
+        "serialbaud": "9600",
+        "databits": "8",
+        "parity": "none",
+        "stopbits": "1",
+        "waitfor": "",
+        "dtr": "none",
+        "rts": "none",
+        "cts": "none",
+        "dsr": "none",
+        "newline": "\\n",
+        "bin": "false",
+        "out": "char",
+        "addchar": "",
+        "responsetimeout": "10000"
+    },
+    {
+        "id": "ee32dc5a4dfaa70c",
+        "type": "ui_group",
+        "name": "DHT11 chart",
+        "tab": "e7aa62a1a43545ed",
+        "order": 1,
+        "disp": false,
+        "width": "10",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "16bc2f799e8aba9c",
+        "type": "ui_group",
+        "name": "Group 1",
+        "tab": "f4528104e64b1c48",
+        "order": 1,
+        "disp": true,
+        "width": "20",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "e7aa62a1a43545ed",
+        "type": "ui_tab",
+        "name": "Humidity/Temperature ",
+        "icon": "dashboard",
+        "order": 3,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "f4528104e64b1c48",
+        "type": "ui_tab",
+        "name": "stream",
+        "icon": "dashboard",
+        "order": 11,
+        "disabled": false,
+        "hidden": false
+    }
+]

@@ -1,0 +1,161 @@
+[
+    {
+        "id": "8abd7d340e4a2cc1",
+        "type": "tab",
+        "label": "IR_Example",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "dd66cdc8f15fff74",
+        "type": "serial in",
+        "z": "8abd7d340e4a2cc1",
+        "name": "",
+        "serial": "36594b5169de2c99",
+        "x": 130,
+        "y": 220,
+        "wires": [
+            [
+                "a5d70558f49f0f37"
+            ]
+        ]
+    },
+    {
+        "id": "27d13c71a4d57b8c",
+        "type": "function",
+        "z": "8abd7d340e4a2cc1",
+        "name": "function 1",
+        "func": "var m = msg.payload.trim();\n\nif(m == 'ON'){\n    msg.payload = \"Object Detected\";\n    return msg;\n}\nelse{\n    msg.payload = \"No Object Detected\";\n    return msg;\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 220,
+        "wires": [
+            [
+                "e5dfedc072f35da8",
+                "697fe0e4c115dbf9"
+            ]
+        ]
+    },
+    {
+        "id": "e5dfedc072f35da8",
+        "type": "ui_text",
+        "z": "8abd7d340e4a2cc1",
+        "group": "216a6ac98d1ff24d",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "className": "",
+        "x": 590,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "a5d70558f49f0f37",
+        "type": "split",
+        "z": "8abd7d340e4a2cc1",
+        "name": "",
+        "splt": "/\\n/",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 270,
+        "y": 220,
+        "wires": [
+            [
+                "27d13c71a4d57b8c"
+            ]
+        ]
+    },
+    {
+        "id": "697fe0e4c115dbf9",
+        "type": "ui_led",
+        "z": "8abd7d340e4a2cc1",
+        "order": 1,
+        "group": "93bab989f17505b6",
+        "width": "1",
+        "height": "1",
+        "label": "",
+        "labelPlacement": "right",
+        "labelAlignment": "right",
+        "colorForValue": [
+            {
+                "color": "#ff0000",
+                "value": "Object Detected",
+                "valueType": "str"
+            },
+            {
+                "color": "#008000",
+                "value": "No Object Detected",
+                "valueType": "str"
+            }
+        ],
+        "allowColorForValueInMessage": false,
+        "shape": "circle",
+        "showGlow": true,
+        "name": "",
+        "x": 590,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "36594b5169de2c99",
+        "type": "serial-port",
+        "serialport": "COM37",
+        "serialbaud": "9600",
+        "databits": "8",
+        "parity": "none",
+        "stopbits": "1",
+        "waitfor": "",
+        "dtr": "none",
+        "rts": "none",
+        "cts": "none",
+        "dsr": "none",
+        "newline": "\\n",
+        "bin": "false",
+        "out": "char",
+        "addchar": "",
+        "responsetimeout": "10000"
+    },
+    {
+        "id": "216a6ac98d1ff24d",
+        "type": "ui_group",
+        "name": "Message",
+        "tab": "835a1b82dad0688d",
+        "order": 1,
+        "disp": false,
+        "width": "4",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "93bab989f17505b6",
+        "type": "ui_group",
+        "name": "LED",
+        "tab": "835a1b82dad0688d",
+        "order": 2,
+        "disp": false,
+        "width": "1",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "835a1b82dad0688d",
+        "type": "ui_tab",
+        "name": "IR Proximity Sensor",
+        "icon": "dashboard",
+        "order": 5,
+        "disabled": false,
+        "hidden": false
+    }
+]

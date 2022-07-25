@@ -1,0 +1,186 @@
+[
+    {
+        "id": "78ec8f097a67f37b",
+        "type": "tab",
+        "label": "Flow 6",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "10440f19faf51987",
+        "type": "inject",
+        "z": "78ec8f097a67f37b",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "5",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 190,
+        "y": 220,
+        "wires": [
+            [
+                "b90704b3160eeb2b",
+                "bf56c92d2a361b5a"
+            ]
+        ]
+    },
+    {
+        "id": "bf56c92d2a361b5a",
+        "type": "debug",
+        "z": "78ec8f097a67f37b",
+        "name": "debug 4",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 640,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "b90704b3160eeb2b",
+        "type": "mqtt out",
+        "z": "78ec8f097a67f37b",
+        "name": "",
+        "topic": "",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "62942e11fc49d33e",
+        "x": 550,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "3adbba1fa247b7d4",
+        "type": "http in",
+        "z": "78ec8f097a67f37b",
+        "name": "",
+        "url": "/pub/:topic/:payload",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 170,
+        "y": 140,
+        "wires": [
+            [
+                "3053b9d250e30439"
+            ]
+        ]
+    },
+    {
+        "id": "8ac1ed13b0eb1ab6",
+        "type": "mqtt out",
+        "z": "78ec8f097a67f37b",
+        "name": "",
+        "topic": "",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "62942e11fc49d33e",
+        "x": 670,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "3053b9d250e30439",
+        "type": "function",
+        "z": "78ec8f097a67f37b",
+        "name": "create message",
+        "func": "// create message\nmsg.topic = msg.req.params.topic;\nmsg.payload = msg.req.params.payload;\nmsg.qos = 2;\nmsg.retain = false;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 140,
+        "wires": [
+            [
+                "fc3bf02ade289acf",
+                "8ac1ed13b0eb1ab6"
+            ]
+        ]
+    },
+    {
+        "id": "fc3bf02ade289acf",
+        "type": "function",
+        "z": "78ec8f097a67f37b",
+        "name": "create response",
+        "func": "// create response\nmsg.payload = {\nsuccess: true,\nmessage: \"published\" +\nmsg.req.params.topic +\n\"/\" + msg.req.params.payload\n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 620,
+        "y": 140,
+        "wires": [
+            [
+                "1ea6ef3e5f7cf06b"
+            ]
+        ]
+    },
+    {
+        "id": "1ea6ef3e5f7cf06b",
+        "type": "http response",
+        "z": "78ec8f097a67f37b",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 770,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "62942e11fc49d33e",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "user1",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    }
+]

@@ -1,0 +1,83 @@
+[
+    {
+        "id": "b22282c7.8a1ff",
+        "type": "tab",
+        "label": "DHT11MySQL",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "27b7a925.9852c6",
+        "type": "function",
+        "z": "b22282c7.8a1ff",
+        "name": "SQL Query",
+        "func": "m = msg.payload.split(',');\ntemperature =m[0]\nhumidity = m[1]\nmsg.topic = \"INSERT INTO DHT11Table (Humidity,Temperature) VALUES (\"+temperature+\",\"+humidity+\");\"\nreturn msg;\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 160,
+        "wires": [
+            [
+                "2183444d.b1114c"
+            ]
+        ]
+    },
+    {
+        "id": "2183444d.b1114c",
+        "type": "mysql",
+        "z": "b22282c7.8a1ff",
+        "mydb": "4bd6fc82.510b44",
+        "name": "DHT11Database",
+        "x": 590,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d177ebb3b72b3845",
+        "type": "serial in",
+        "z": "b22282c7.8a1ff",
+        "name": "",
+        "serial": "36594b5169de2c99",
+        "x": 150,
+        "y": 160,
+        "wires": [
+            [
+                "27b7a925.9852c6"
+            ]
+        ]
+    },
+    {
+        "id": "4bd6fc82.510b44",
+        "type": "MySQLdatabase",
+        "name": "",
+        "host": "127.0.0.1",
+        "port": "3306",
+        "db": "dht11",
+        "tz": "GMT +5:30",
+        "charset": ""
+    },
+    {
+        "id": "36594b5169de2c99",
+        "type": "serial-port",
+        "serialport": "COM17",
+        "serialbaud": "9600",
+        "databits": "8",
+        "parity": "none",
+        "stopbits": "1",
+        "waitfor": "",
+        "dtr": "none",
+        "rts": "none",
+        "cts": "none",
+        "dsr": "none",
+        "newline": "\\n",
+        "bin": "false",
+        "out": "char",
+        "addchar": "",
+        "responsetimeout": "10000"
+    }
+]

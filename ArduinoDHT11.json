@@ -1,0 +1,181 @@
+[
+    {
+        "id": "175610a4189623b5",
+        "type": "tab",
+        "label": "Humidity and Temperature",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "9a288d63e542fa6a",
+        "type": "function",
+        "z": "175610a4189623b5",
+        "name": "data split",
+        "func": "\nm = msg.payload.split(',');\nH = {payload:m[0].trim()};\nT = {payload:m[1].trim()};\n\nreturn [H,T];",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 300,
+        "wires": [
+            [
+                "401022c8ee84ba46",
+                "3cbed621e91d4922"
+            ],
+            [
+                "113709099f59f819",
+                "33fbaab5198fdb05"
+            ]
+        ]
+    },
+    {
+        "id": "e0f28959b9f2ac16",
+        "type": "serial in",
+        "z": "175610a4189623b5",
+        "name": "Arduino",
+        "serial": "cb7213c0220ce78b",
+        "x": 330,
+        "y": 300,
+        "wires": [
+            [
+                "9a288d63e542fa6a"
+            ]
+        ]
+    },
+    {
+        "id": "401022c8ee84ba46",
+        "type": "ui_gauge",
+        "z": "175610a4189623b5",
+        "name": "Humidity",
+        "group": "162d7c1a5f3fdd4f",
+        "order": 1,
+        "width": "5",
+        "height": "4",
+        "gtype": "gage",
+        "title": "gauge",
+        "label": "units",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "x": 800,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "113709099f59f819",
+        "type": "ui_gauge",
+        "z": "175610a4189623b5",
+        "name": "Temperature",
+        "group": "55e9d3719c312633",
+        "order": 1,
+        "width": "5",
+        "height": "4",
+        "gtype": "gage",
+        "title": "gauge",
+        "label": "units",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "x": 830,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "3cbed621e91d4922",
+        "type": "debug",
+        "z": "175610a4189623b5",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 780,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "33fbaab5198fdb05",
+        "type": "debug",
+        "z": "175610a4189623b5",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 800,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "cb7213c0220ce78b",
+        "type": "serial-port",
+        "serialport": "COM17",
+        "serialbaud": "9600",
+        "databits": "8",
+        "parity": "none",
+        "stopbits": "1",
+        "waitfor": "",
+        "dtr": "none",
+        "rts": "none",
+        "cts": "none",
+        "dsr": "none",
+        "newline": "\\n",
+        "bin": "false",
+        "out": "char",
+        "addchar": "",
+        "responsetimeout": "10000"
+    },
+    {
+        "id": "162d7c1a5f3fdd4f",
+        "type": "ui_group",
+        "name": "Humidity",
+        "tab": "9b144f44a0498f13",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "55e9d3719c312633",
+        "type": "ui_group",
+        "name": "Temperature",
+        "tab": "9b144f44a0498f13",
+        "order": 2,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "9b144f44a0498f13",
+        "type": "ui_tab",
+        "name": "DHT11 ",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
